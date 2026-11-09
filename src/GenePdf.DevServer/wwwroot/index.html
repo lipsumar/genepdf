@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GenePdf Studio</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='9' fill='%231f5f8b'/%3E%3Cpath d='M12 8h11l6 6v18H12z' fill='%23fff'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">G</span> GenePdf <span class="muted">studio</span></div>
+
+    <label class="field">
+      <span>Document</span>
+      <select id="documentSelect"></select>
+    </label>
+    <div id="layoutInfo" class="chip" title="Layout pinned by the document's layout / layout-version attributes"></div>
+
+    <label class="field">
+      <span>Data</span>
+      <select id="sampleSelect"></select>
+    </label>
+
+    <div class="spacer"></div>
+
+    <span id="readOnlyBadge" class="chip warn" hidden>Read-only demo · edits are not saved</span>
+    <button id="newVersionBtn" class="btn" title="Copy this version to a new version folder">New version…</button>
+    <button id="saveBtn" class="btn" title="Save changed files (⌘S)">Save</button>
+    <button id="renderBtn" class="btn primary" title="Render (⌘↵)">Render</button>
+  </header>
+
+  <main class="workspace">
+    <section class="pane editor-pane">
+      <nav id="tabs" class="tabs"></nav>
+      <div id="tabNote" class="tab-note" hidden></div>
+      <div id="editor" class="editor"></div>
+    </section>
+
+    <div class="splitter" id="splitter" title="Drag to resize"></div>
+
+    <section class="pane preview-pane">
+      <div class="preview-toolbar">
+        <div class="segmented" role="tablist">
+          <button data-view="pdf" class="active">PDF</button>
+          <button data-view="html">HTML</button>
+        </div>
+        <label class="toggle"><input type="checkbox" id="autoRender" checked> Auto-render</label>
+        <div class="spacer"></div>
+        <span id="status" class="status"></span>
+        <a id="downloadLink" class="btn small" download hidden>Download</a>
+      </div>
+      <div class="preview">
+        <iframe id="pdfFrame" title="PDF preview"></iframe>
+        <iframe id="htmlFrame" title="HTML preview" sandbox hidden></iframe>
+        <div id="previewEmpty" class="preview-empty">Pick a document to start.</div>
+      </div>
+      <div class="bottom-panel">
+        <div class="panel-tabs">
+          <button data-panel="problems" class="active">Problems <span id="problemCount" class="count">0</span></button>
+          <button data-panel="metadata">Embedded metadata</button>
+          <button data-panel="help">Syntax</button>
+        </div>
+        <div id="panel-problems" class="panel-body"><ul id="problems" class="problems"></ul></div>
+        <div id="panel-metadata" class="panel-body" hidden><table id="metadata" class="kv"></table></div>
+        <div id="panel-help" class="panel-body help" hidden>
+          <table class="kv">
+            <tr><th><code>{{ expr }}</code></th><td>Insert a value, in text or attributes. <code>{{ invoice.total | money:'EUR' }}</code></td></tr>
+            <tr><th><code>g:if</code> / <code>g:else-if</code> / <code>g:else</code></th><td>On consecutive sibling elements. <code>&lt;p g:if="invoice.paid"&gt;</code></td></tr>
+            <tr><th><code>g:each</code></th><td><code>&lt;tr g:each="line in invoice.lines"&gt;</code>. Also <code>loop.index</code>, <code>loop.number</code>, <code>loop.first</code>, <code>loop.last</code></td></tr>
+            <tr><th><code>g:text</code></th><td>Replace the element's content with a value</td></tr>
+            <tr><th><code>&lt;g:block&gt;</code></th><td>Invisible wrapper, for conditions or loops on several elements</td></tr>
+            <tr><th><code>&lt;g:fill slot="…"&gt;</code></th><td>Fill a layout slot (subject, meta, closing…). Anything outside goes to <code>body</code></td></tr>
+            <tr><th>Operators</th><td><code>and or not == != &lt; &lt;= &gt; &gt;= + - * / % a ? b : c</code></td></tr>
+            <tr><th>Filters</th><td><code>money:'EUR'</code> <code>number:'0.00'</code> <code>date:'d MMMM yyyy'</code> <code>upper</code> <code>lower</code> <code>trim</code> <code>default:'x'</code> <code>join:', '</code> <code>sum:'field'</code> <code>count</code> <code>first</code> <code>last</code> <code>round:2</code> <code>abs</code></td></tr>
+            <tr><th>Layout only</th><td><code>&lt;g:slot name="…"/&gt;</code>, <code>&lt;g:page-number/&gt;</code>, <code>&lt;g:page-count/&gt;</code> (header/footer)</td></tr>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="versionDialog">
+    <form method="dialog">
+      <h3>New version</h3>
+      <p class="muted">Copies <strong id="versionFrom"></strong> to a new folder and updates its <code>version</code> attribute. The copy keeps its layout pin.</p>
+      <label class="field stacked"><span>New version</span><input id="versionInput" required pattern="[A-Za-z0-9][A-Za-z0-9._-]*" autocomplete="off"></label>
+      <div class="dialog-actions">
+        <button value="cancel" class="btn" formnovalidate>Cancel</button>
+        <button value="ok" class="btn primary">Create</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

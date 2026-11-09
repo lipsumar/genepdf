@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Letter layout: A4, letterhead + address block on the first page (right window envelope),
+  footer with sender details and page numbers on every page.
+
+  Data it expects (all documents using this layout provide it):
+    sender     { name, address { street, postalCode, city, country }, phone, email, web, vatNumber, iban, bic }
+    recipient  { name, attention?, address { street, postalCode, city, country } }
+    reference, date (yyyy-MM-dd), contact? { name, phone, email }
+
+  Slots: "subject", "body", "closing" (optional).
+-->
+<g:layout xmlns="http://www.w3.org/1999/xhtml" xmlns:g="urn:genepdf" version="1.0">
+  <g:stylesheet href="layout.css"/>
+
+  <g:page-footer>
+    <div class="footer">
+      <div class="footer-sender">
+        <strong>{{ sender.name }}</strong>
+        <span>{{ sender.address.street }}, {{ sender.address.postalCode }} {{ sender.address.city }}</span>
+        <span g:if="sender.phone">{{ sender.phone }}</span>
+        <span g:if="sender.email">{{ sender.email }}</span>
+        <span g:if="sender.vatNumber">TVA/BTW {{ sender.vatNumber }}</span>
+      </div>
+      <div class="footer-page">
+        <span g:if="reference">{{ reference }} · </span><g:page-number/>/<g:page-count/>
+      </div>
+    </div>
+  </g:page-footer>
+
+  <g:body>
+    <header class="letterhead">
+      <div class="brand">
+        <img class="logo" src="assets/logo.svg" alt=""/>
+        <div class="brand-name">{{ sender.name }}</div>
+      </div>
+
+      <div class="sender-return">{{ sender.name }} · {{ sender.address.street }} · {{ sender.address.postalCode }} {{ sender.address.city }}</div>
+
+      <address class="recipient">
+        <div class="recipient-name">{{ recipient.name }}</div>
+        <div g:if="recipient.attention">{{ recipient.attention }}</div>
+        <div>{{ recipient.address.street }}</div>
+        <div>{{ recipient.address.postalCode }} {{ recipient.address.city }}</div>
+        <div g:if="recipient.address.country and recipient.address.country != sender.address.country" class="country">{{ recipient.address.country | upper }}</div>
+      </address>
+
+      <dl class="meta">
+        <g:slot name="meta">
+          <g:block g:if="reference"><dt>Ref.</dt><dd>{{ reference }}</dd></g:block>
+          <g:block g:if="date"><dt>Date</dt><dd>{{ date | date:'d MMMM yyyy' }}</dd></g:block>
+        </g:slot>
+        <g:block g:if="contact">
+          <dt>Contact</dt>
+          <dd>{{ contact.name }}<div g:if="contact.phone">{{ contact.phone }}</div><div g:if="contact.email">{{ contact.email }}</div></dd>
+        </g:block>
+      </dl>
+    </header>
+
+    <h1 class="subject"><g:slot name="subject"/></h1>
+
+    <main class="content">
+      <g:slot name="body"/>
+    </main>
+
+    <g:slot name="closing"/>
+  </g:body>
+</g:layout>

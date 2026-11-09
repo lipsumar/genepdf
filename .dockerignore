@@ -1,0 +1,6 @@
+**
+!GenePdf.slnx
+!src/**
+!templates/**
+**/bin/
+**/obj/

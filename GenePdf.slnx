@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/GenePdf.Core/GenePdf.Core.csproj" />
+    <Project Path="src/GenePdf.DevServer/GenePdf.DevServer.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/GenePdf.Tests/GenePdf.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,39 @@
+{
+  "reference": "F-2026-0142",
+  "date": "2026-11-09",
+  "sender": {
+    "name": "Atelier Nord",
+    "address": { "street": "Rue de la Loi 42", "postalCode": "1040", "city": "Bruxelles", "country": "Belgique" },
+    "phone": "+32 2 555 01 23",
+    "email": "facturation@ateliernord.example",
+    "web": "ateliernord.example",
+    "vatNumber": "BE 0123.456.789",
+    "iban": "BE68 5390 0754 7034",
+    "bic": "TRIOBEBB"
+  },
+  "recipient": {
+    "name": "Brasserie du Canal SRL",
+    "attention": "Mme Claire Dubois",
+    "address": { "street": "Quai des Péniches 7", "postalCode": "1000", "city": "Bruxelles", "country": "Belgique" }
+  },
+  "contact": { "name": "Julien Martens", "phone": "+32 2 555 01 24", "email": "julien@ateliernord.example" },
+  "customer": { "number": "C-0087", "vatNumber": "BE 0987.654.321" },
+  "invoice": {
+    "number": "2026-0142",
+    "dueDate": "2026-12-09",
+    "period": { "from": "2026-10-01", "to": "2026-10-31" },
+    "structuredReference": "+++090/9337/55493+++",
+    "lines": [
+      { "description": "Conception graphique — carte des bières", "detail": "3 propositions, 2 allers-retours", "quantity": 12, "unit": "h", "unitPrice": 85, "vatRate": 21 },
+      { "description": "Impression menus A4, papier recyclé 300 g", "quantity": 250, "unitPrice": 1.2, "vatRate": 21 },
+      { "description": "Livraison", "quantity": 1, "unitPrice": 25, "vatRate": 21 }
+    ],
+    "subtotal": 1345.00,
+    "discount": { "label": "client fidèle (5 %)", "amount": 67.25 },
+    "vat": [ { "rate": 21, "base": 1277.75, "amount": 268.33 } ],
+    "total": 1546.08,
+    "paid": false,
+    "overdue": false,
+    "notes": null
+  }
+}

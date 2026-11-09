@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<g:document xmlns="http://www.w3.org/1999/xhtml" xmlns:g="urn:genepdf"
+            version="1.0" layout="letter" layout-version="1.0" lang="en-GB"
+            title="Payment reminder {{ reference }}">
+
+  <g:fill slot="subject">
+    <g:block g:if="level == 1">Friendly reminder: invoice {{ invoices[0].number }}</g:block>
+    <g:block g:else-if="level == 2">Second reminder: {{ invoices | count }} unpaid invoice{{ (invoices | count) > 1 ? 's' : '' }}</g:block>
+    <g:block g:else="">Final notice before collection</g:block>
+  </g:fill>
+
+  <p>Dear {{ recipient.attention | default:'Sir or Madam' }},</p>
+
+  <p g:if="level == 1">
+    We may have missed your payment, but according to our records the invoice below is still open.
+    If you have already paid, please disregard this letter.
+  </p>
+  <p g:else-if="level == 2">
+    Despite our reminder of {{ previousReminder | date:'d MMMM yyyy' }}, the following invoices remain unpaid.
+  </p>
+  <p g:else="">
+    We have not received payment despite two reminders. Unless the full amount reaches us by
+    <strong>{{ deadline | date:'d MMMM yyyy' }}</strong>, we will pass this file to our collection agency, and additional costs will apply.
+  </p>
+
+  <table>
+    <thead><tr><th>Invoice</th><th>Date</th><th>Due</th><th class="num">Amount</th></tr></thead>
+    <tbody>
+      <tr g:each="inv in invoices">
+        <td>{{ inv.number }}</td>
+        <td>{{ inv.date | date:'d MMM yyyy' }}</td>
+        <td>{{ inv.dueDate | date:'d MMM yyyy' }} <span g:if="inv.daysLate > 30" class="muted small">({{ inv.daysLate }} days late)</span></td>
+        <td class="num">{{ inv.amount | money:'EUR' }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="totals">
+    <tr g:if="level >= 3 and fees"><td>Late payment fees</td><td class="num">{{ fees | money:'EUR' }}</td></tr>
+    <tr class="grand"><td>Total due</td><td class="num">{{ (invoices | sum:'amount') + (level >= 3 ? fees : 0) | money:'EUR' }}</td></tr>
+  </table>
+
+  <div class="callout">
+    <strong>How to pay</strong>
+    Transfer to {{ sender.iban }} (BIC {{ sender.bic }}), reference <strong style="display:inline">{{ reference }}</strong>.
+  </div>
+
+  <g:fill slot="closing">
+    <div class="signature">
+      <div>Kind regards,</div>
+      <div class="name">{{ contact.name }}</div>
+      <div class="muted small">{{ contact.role | default:'Accounts' }} · {{ contact.email }}</div>
+    </div>
+  </g:fill>
+</g:document>

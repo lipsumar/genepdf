@@ -1,0 +1,26 @@
+# Demo stack, served by Traefik at https://${GENEPDF_HOST} (set in .env).
+# Behind basic auth: rendering arbitrary HTML in Chromium is not something to leave open to the internet.
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    mem_limit: 1g
+    environment:
+      GenePdf__ReadOnly: ${GENEPDF_READONLY:-true}   # demo: edits stay in the browser
+      GenePdf__MaxConcurrency: "2"
+      GenePdf__RenderPerMinute: "60"
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-external
+      - traefik.http.routers.genepdf.rule=Host(`${GENEPDF_HOST:?set GENEPDF_HOST}`)
+      - traefik.http.routers.genepdf.entrypoints=websecure
+      - traefik.http.routers.genepdf.tls.certresolver=le
+      - traefik.http.routers.genepdf.middlewares=genepdf-auth
+      - traefik.http.middlewares.genepdf-auth.basicauth.users=${BASIC_AUTH_USERS:?set BASIC_AUTH_USERS (htpasswd format)}
+      - traefik.http.services.genepdf.loadbalancer.server.port=8080
+    networks:
+      - traefik-external
+
+networks:
+  traefik-external:
+    external: true

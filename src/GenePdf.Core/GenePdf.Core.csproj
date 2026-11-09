@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>GenePdf</RootNamespace>
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Pinned: 6.2.4 is the last MIT release. 6.5+ is AGPL-3.0 or commercial and refuses to run without a license. -->
+    <PackageReference Include="PDFsharp" Version="[6.2.4]" />
+    <PackageReference Include="PuppeteerSharp" Version="25.15.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
+    <!-- Transitive from PDFsharp; the version it asks for has known vulnerabilities. -->
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.14" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\sRGB.icc" LogicalName="GenePdf.Resources.sRGB.icc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="GenePdf.Tests" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<g:document xmlns="http://www.w3.org/1999/xhtml" xmlns:g="urn:genepdf"
+            version="1.0" layout="letter" layout-version="1.0" lang="fr-BE"
+            title="Facture {{ invoice.number }}">
+
+  <g:fill slot="subject">Facture n° {{ invoice.number }}</g:fill>
+
+  <g:fill slot="meta">
+    <dt>Facture</dt><dd>{{ invoice.number }}</dd>
+    <dt>Date</dt><dd>{{ date | date:'d MMMM yyyy' }}</dd>
+    <dt>Échéance</dt><dd>{{ invoice.dueDate | date:'d MMMM yyyy' }}</dd>
+    <g:block g:if="customer.number"><dt>Client</dt><dd>{{ customer.number }}</dd></g:block>
+    <g:block g:if="customer.vatNumber"><dt>TVA client</dt><dd>{{ customer.vatNumber }}</dd></g:block>
+  </g:fill>
+
+  <p>{{ recipient.attention ? 'À l’attention de ' + recipient.attention + ',' : 'Madame, Monsieur,' }}</p>
+  <p>Veuillez trouver ci-dessous le détail des prestations réalisées
+     <g:block g:if="invoice.period">pour la période du {{ invoice.period.from | date:'d MMMM' }} au {{ invoice.period.to | date:'d MMMM yyyy' }}</g:block>.</p>
+
+  <table class="lines">
+    <thead>
+      <tr><th>Description</th><th class="num">Qté</th><th class="num">Prix unitaire</th><th class="num">TVA</th><th class="num">Montant HTVA</th></tr>
+    </thead>
+    <tbody>
+      <tr g:each="line in invoice.lines">
+        <td>
+          {{ line.description }}
+          <div g:if="line.detail" class="muted small">{{ line.detail }}</div>
+        </td>
+        <td class="num">{{ line.quantity | number }}<span g:if="line.unit" class="muted"> {{ line.unit }}</span></td>
+        <td class="num">{{ line.unitPrice | money:'EUR' }}</td>
+        <td class="num">{{ line.vatRate }} %</td>
+        <td class="num">{{ line.quantity * line.unitPrice | money:'EUR' }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="totals">
+    <tr><td>Sous-total HTVA</td><td class="num">{{ invoice.subtotal | money:'EUR' }}</td></tr>
+    <tr g:if="invoice.discount"><td>Remise {{ invoice.discount.label }}</td><td class="num">− {{ invoice.discount.amount | money:'EUR' }}</td></tr>
+    <tr g:each="vat in invoice.vat"><td>TVA {{ vat.rate }} % sur {{ vat.base | money:'EUR' }}</td><td class="num">{{ vat.amount | money:'EUR' }}</td></tr>
+    <tr class="grand"><td>Total TVAC</td><td class="num">{{ invoice.total | money:'EUR' }}</td></tr>
+  </table>
+
+  <div g:if="invoice.paid" class="callout success">
+    <strong>Facture acquittée</strong>
+    Paiement reçu le {{ invoice.paidOn | date:'d MMMM yyyy' }}. Merci !
+  </div>
+  <div g:else-if="invoice.overdue" class="callout warning">
+    <strong>Échéance dépassée</strong>
+    Cette facture est échue depuis le {{ invoice.dueDate | date:'d MMMM yyyy' }}.
+    Merci de procéder au paiement de {{ invoice.total | money:'EUR' }} dans les plus brefs délais.
+  </div>
+  <div g:else="" class="callout">
+    <strong>Paiement</strong>
+    Merci de verser {{ invoice.total | money:'EUR' }} avant le {{ invoice.dueDate | date:'d MMMM yyyy' }}
+    sur le compte {{ sender.iban }} (BIC {{ sender.bic }}) avec la communication structurée
+    <strong style="display:inline">{{ invoice.structuredReference }}</strong>.
+  </div>
+
+  <p g:if="customer.vatNumber and recipient.address.country != sender.address.country" class="small muted">
+    Autoliquidation — TVA due par le cocontractant (art. 196 de la directive 2006/112/CE).
+  </p>
+
+  <p g:if="invoice.notes" class="small">{{ invoice.notes }}</p>
+
+  <g:fill slot="closing">
+    <p class="small muted">Conditions générales disponibles sur {{ sender.web }}. En cas de question, contactez {{ contact.name | default:'notre service comptable' }}.</p>
+  </g:fill>
+</g:document>

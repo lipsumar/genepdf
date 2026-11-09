@@ -1,0 +1,44 @@
+{
+  "reference": "R-2026-0031",
+  "date": "2026-11-09",
+  "sender": {
+    "name": "Atelier Nord",
+    "address": {
+      "street": "Rue de la Loi 42",
+      "postalCode": "1040",
+      "city": "Brussels",
+      "country": "Belgium"
+    },
+    "phone": "+32 2 555 01 23",
+    "email": "billing@ateliernord.example",
+    "web": "ateliernord.example",
+    "vatNumber": "BE 0123.456.789",
+    "iban": "BE68 5390 0754 7034",
+    "bic": "TRIOBEBB"
+  },
+  "recipient": {
+    "name": "Harbour Lights Ltd",
+    "attention": "Mr James Whitfield",
+    "address": {
+      "street": "14 Quayside",
+      "postalCode": "NE1 3DX",
+      "city": "Newcastle upon Tyne",
+      "country": "United Kingdom"
+    }
+  },
+  "contact": {
+    "name": "Julien Martens",
+    "role": "Accounts receivable",
+    "email": "julien@ateliernord.example"
+  },
+  "level": 1,
+  "invoices": [
+    {
+      "number": "2026-0118",
+      "date": "2026-09-15",
+      "dueDate": "2026-10-15",
+      "amount": 980.5,
+      "daysLate": 25
+    }
+  ]
+}

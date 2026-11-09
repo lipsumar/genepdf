@@ -1,0 +1,25 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+concurrency: deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: appleboy/ssh-action@v1
+      name: Deploy via SSH
+      with:
+        host: ${{ secrets.DEPLOY_HOST }}
+        username: deploy
+        key: ${{ secrets.DEPLOY_KEY }}
+        fingerprint: ${{ secrets.DEPLOY_FINGERPRINT }}
+        port: 22
+        timeout: 5m
+        command_timeout: 5m
+        script: deploy   # ignored, the forced command decides

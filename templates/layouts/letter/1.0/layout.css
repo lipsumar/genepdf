@@ -1,0 +1,86 @@
+/* Letter layout 1.0 — all measures in mm so they match envelope windows. */
+
+@font-face { font-family: "Inter"; font-weight: 400; src: url(fonts/inter-latin-400.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Inter"; font-weight: 400; src: url(fonts/inter-latin-ext-400.woff2) format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Inter"; font-weight: 600; src: url(fonts/inter-latin-600.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Inter"; font-weight: 600; src: url(fonts/inter-latin-ext-600.woff2) format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Inter"; font-weight: 700; src: url(fonts/inter-latin-700.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Inter"; font-weight: 700; src: url(fonts/inter-latin-ext-700.woff2) format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+
+:root {
+  --ink: #1d2433;
+  --muted: #5f6b7a;
+  --line: #d5dae1;
+  --accent: #1f5f8b;
+  --accent-soft: #eaf2f8;
+}
+
+/* Page box. The bottom margin holds the footer (Chromium footer template). */
+@page { size: A4; margin: 22mm 18mm 26mm 22mm; }
+@page :first { margin-top: 12mm; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; font-family: "Inter", sans-serif; font-size: 9.5pt; line-height: 1.45; color: var(--ink); }
+
+/* ------------------------------------------------------------ first page letterhead
+   Positioned inside a fixed-height block at the top of page 1. Page 1 content box starts
+   12mm from the top and 22mm from the left edge of the sheet. */
+.letterhead { position: relative; height: 93mm; }
+.brand { position: absolute; top: 0; left: 0; display: flex; align-items: center; gap: 3mm; }
+.logo { width: 11mm; height: 11mm; }
+.brand-name { font-size: 13pt; font-weight: 700; letter-spacing: 0.02em; color: var(--accent); }
+
+/* Address window of a right-window C5/6 or DL envelope: 100mm from the left edge, 45mm from the top, 90 × 45 mm. */
+.sender-return { position: absolute; top: 33mm; left: 78mm; width: 90mm; font-size: 6.5pt; color: var(--muted);
+  border-bottom: 0.2mm solid var(--line); padding-bottom: 0.8mm; white-space: nowrap; overflow: hidden; }
+.recipient { position: absolute; top: 38mm; left: 78mm; width: 90mm; font-style: normal; font-size: 10pt; line-height: 1.4; }
+.recipient-name { font-weight: 600; }
+.country { margin-top: 1mm; letter-spacing: 0.05em; }
+
+.meta { position: absolute; top: 33mm; left: 0; width: 70mm; margin: 0;
+  display: grid; grid-template-columns: 17mm 1fr; row-gap: 1.2mm; font-size: 8.5pt; }
+.meta dt { color: var(--muted); }
+.meta dd { margin: 0; }
+
+/* ------------------------------------------------------------ content */
+.subject { font-size: 12.5pt; font-weight: 700; margin: 0 0 6mm; color: var(--ink); }
+.subject:empty { display: none; }
+.content p { margin: 0 0 3mm; }
+h2 { font-size: 10.5pt; font-weight: 600; margin: 6mm 0 2mm; color: var(--accent); break-after: avoid; }
+
+table { width: 100%; border-collapse: collapse; margin: 3mm 0 4mm; }
+thead { display: table-header-group; } /* repeat header row after page breaks */
+th { text-align: left; font-weight: 600; font-size: 8pt; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em;
+  border-bottom: 0.3mm solid var(--ink); padding: 1.5mm 2mm; }
+td { padding: 1.8mm 2mm; border-bottom: 0.2mm solid var(--line); vertical-align: top; }
+tr { break-inside: avoid; }
+.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+.small { font-size: 8pt; }
+
+.totals { width: 75mm; margin-left: auto; break-inside: avoid; }
+.totals td { border: none; padding: 1mm 2mm; }
+.totals .grand td { border-top: 0.3mm solid var(--ink); font-weight: 700; font-size: 10.5pt; padding-top: 2mm; }
+
+.callout { background: var(--accent-soft); border-left: 1mm solid var(--accent); padding: 3mm 4mm; margin: 5mm 0; break-inside: avoid; }
+.callout.success { background: #e9f6ee; border-color: #2e7d4f; }
+.callout.warning { background: #fdf3e4; border-color: #b7791f; }
+.callout strong { display: block; margin-bottom: 1mm; }
+
+.signature { margin-top: 10mm; break-inside: avoid; }
+.signature .name { font-weight: 600; margin-top: 12mm; }
+
+/* ------------------------------------------------------------ footer (Chromium footer template: own document, own font size) */
+.g-page-footer { width: 100%; padding: 0 18mm 7mm 22mm; box-sizing: border-box; font-family: "Inter", sans-serif; color: var(--muted); }
+.footer { display: flex; justify-content: space-between; align-items: flex-end; gap: 6mm; font-size: 7pt; line-height: 1.5;
+  border-top: 0.2mm solid var(--line); padding-top: 2mm; }
+.footer-sender span { white-space: nowrap; }
+.footer-sender span::before { content: " · "; }
+.footer-sender strong { color: var(--ink); font-weight: 600; }
+.footer-page { white-space: nowrap; }
