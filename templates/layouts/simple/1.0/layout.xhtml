@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Simple layout: a header with the issuer and the addressee, a title, the content,
+  and page numbers at the bottom of every page. No logo, no fonts to ship.
+
+  Data it expects: issuer { name, address, phone?, web? }, recipient { name, address[] },
+                   reference, date (yyyy-MM-dd)
+  Slots: "title", "body".
+-->
+<g:layout xmlns="http://www.w3.org/1999/xhtml" xmlns:g="urn:genepdf" version="1.0">
+  <g:stylesheet href="layout.css"/>
+
+  <g:page-footer>
+    <div class="footer">
+      <span>{{ issuer.name }} · {{ reference }}</span>
+      <span>Page <g:page-number/> / <g:page-count/></span>
+    </div>
+  </g:page-footer>
+
+  <g:body>
+    <header>
+      <div class="issuer">
+        <strong>{{ issuer.name }}</strong>
+        <div>{{ issuer.address }}</div>
+        <div g:if="issuer.phone">{{ issuer.phone }}</div>
+        <div g:if="issuer.web">{{ issuer.web }}</div>
+      </div>
+      <div class="recipient">
+        <strong>{{ recipient.name }}</strong>
+        <div g:each="line in recipient.address">{{ line }}</div>
+      </div>
+    </header>
+
+    <p class="meta">Référence : {{ reference }} · {{ date | date:'d MMMM yyyy' }}</p>
+
+    <h1><g:slot name="title"/></h1>
+
+    <g:slot name="body"/>
+  </g:body>
+</g:layout>

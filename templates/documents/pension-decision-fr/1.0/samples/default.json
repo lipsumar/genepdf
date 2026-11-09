@@ -1,0 +1,31 @@
+{
+  "reference": "PEN/2026/048213",
+  "date": "2026-11-09",
+  "issuer": {
+    "name": "Caisse de pension Horizon",
+    "address": "Boulevard du Midi 120, 1000 Bruxelles",
+    "phone": "02 555 40 00",
+    "web": "horizon-pension.example"
+  },
+  "recipient": {
+    "name": "Madame Marie Dubois",
+    "address": ["Rue des Tilleuls 8", "5000 Namur"]
+  },
+  "beneficiary": {
+    "nationalNumber": "58.03.14-123.45"
+  },
+  "decisions": [
+    {
+      "startDate": "2026-04-01",
+      "subject": "Pension de retraite d'indépendant",
+      "decision": "Accordée",
+      "amount": 1342.18
+    },
+    {
+      "startDate": "2026-04-01",
+      "subject": "Bonus pension",
+      "decision": "Refusée",
+      "reason": "Vous ne remplissez pas les conditions de carrière requises."
+    }
+  ]
+}

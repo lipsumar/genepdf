@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     mem_limit: 1g
     environment:
-      GenePdf__ReadOnly: ${GENEPDF_READONLY:-true}   # demo: edits stay in the browser
+      GenePdf__ReadOnly: ${GENEPDF_READONLY:-false}  # true: edits stay in the browser
       GenePdf__MaxConcurrency: "2"
       GenePdf__RenderPerMinute: "60"
     labels:
@@ -18,8 +18,13 @@ services:
       - traefik.http.routers.genepdf.middlewares=genepdf-auth
       - traefik.http.middlewares.genepdf-auth.basicauth.users=${BASIC_AUTH_USERS:?set BASIC_AUTH_USERS (htpasswd format)}
       - traefik.http.services.genepdf.loadbalancer.server.port=8080
+    volumes:
+      - templates:/data/templates   # studio edits; missing versions are seeded from the image on startup
     networks:
       - traefik-external
+
+volumes:
+  templates:
 
 networks:
   traefik-external:

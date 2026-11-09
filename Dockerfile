@@ -15,11 +15,14 @@ ENV TZ=Europe/Brussels \
     DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
     ASPNETCORE_URLS=http://0.0.0.0:8080 \
     GenePdf__ChromiumPath=/usr/bin/chromium \
-    GenePdf__TemplateRoot=/app/templates \
+    GenePdf__TemplateRoot=/data/templates \
+    GenePdf__SeedFrom=/app/templates \
     HOME=/tmp
 WORKDIR /app
 COPY --from=build /app ./
 COPY templates/ /app/templates/
+# /data is a volume in compose; created here so a new volume inherits the ownership.
+RUN mkdir -p /data/templates && chown -R 10001 /data
 USER 10001
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \

@@ -26,7 +26,9 @@ whose attribute wasn't updated is an error, not a silent mix-up).
 ```
 templates/
   layouts/letter/1.0/layout.xhtml        page structure, header/footer, stylesheets, fonts, logo
+  layouts/simple/1.0/layout.xhtml        minimal layout: header, title, page numbers
   documents/invoice-fr/1.0/document.xhtml
+  documents/pension-decision-fr/1.0/     simplest example: one table of decisions (start here)
   documents/invoice-fr/1.0/samples/*.json   test data for the studio
 ```
 

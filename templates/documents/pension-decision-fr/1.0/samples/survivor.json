@@ -1,0 +1,38 @@
+{
+  "reference": "PEN/2026/051977",
+  "date": "2026-11-09",
+  "issuer": {
+    "name": "Caisse de pension Horizon",
+    "address": "Boulevard du Midi 120, 1000 Bruxelles",
+    "phone": "02 555 40 00"
+  },
+  "recipient": {
+    "name": "Monsieur Paul Lambert",
+    "address": ["Chaussée de Liège 211", "4000 Liège"]
+  },
+  "beneficiary": {
+    "nationalNumber": "55.11.02-087.61"
+  },
+  "decisions": [
+    {
+      "startDate": "2026-01-01",
+      "subject": "Pension de retraite d'indépendant",
+      "decision": "Revue à la hausse",
+      "reason": "Prise en compte de l'année 1979.",
+      "amount": 1205.40
+    },
+    {
+      "startDate": "2026-07-01",
+      "subject": "Pension de survie",
+      "decision": "Accordée",
+      "amount": 684.92
+    },
+    {
+      "startDate": "2026-07-01",
+      "subject": "Pension de retraite et de survie (cumul)",
+      "decision": "Limitée",
+      "reason": "Le cumul est plafonné à 110 % de la pension de survie.",
+      "amount": 1890.32
+    }
+  ]
+}

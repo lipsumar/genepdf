@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration.GetSection("GenePdf");
 var templateRoot = Path.GetFullPath(config["TemplateRoot"] ?? Path.Combine(builder.Environment.ContentRootPath, "../../templates"));
 var readOnly = config.GetValue("ReadOnly", false);
+if (config["SeedFrom"] is { Length: > 0 } seedFrom) SeedTemplates(Path.GetFullPath(seedFrom), templateRoot);
 
 builder.Services.AddGenePdf(o =>
 {
@@ -169,6 +170,27 @@ app.MapPost("/api/documents/{name}/{version}/copy", (string name, string version
 });
 
 app.Run();
+
+// Writable demo: templates live in a volume. Version folders shipped with the image are copied in when missing,
+// so a deploy adds new templates without ever overwriting what was edited in the studio.
+static void SeedTemplates(string seed, string root)
+{
+    if (!Directory.Exists(seed)) return;
+    foreach (var kind in new[] { "documents", "layouts" })
+    foreach (var name in Directory.GetDirectories(Path.Combine(seed, kind)))
+    foreach (var version in Directory.GetDirectories(name))
+    {
+        var target = Path.Combine(root, Path.GetRelativePath(seed, version));
+        if (Directory.Exists(target)) continue;
+        foreach (var file in Directory.GetFiles(version, "*", SearchOption.AllDirectories))
+        {
+            var dest = Path.Combine(target, Path.GetRelativePath(version, file));
+            Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
+            File.Copy(file, dest);
+        }
+        Console.WriteLine($"Seeded {Path.GetRelativePath(seed, version)}");
+    }
+}
 
 static Dictionary<string, string> CheckOverrides(Dictionary<string, string>? overrides)
 {

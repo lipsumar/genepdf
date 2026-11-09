@@ -11,7 +11,7 @@ The demo's URL is deliberately not written anywhere in this repo: it lives in `.
 | Project name | `genepdf` → `/srv/genepdf` |
 | Stack | One `app` container: ASP.NET (.NET 10, Alpine) + Chromium, port 8080, uid 10001, ~1.3 GB image |
 | Memory | `mem_limit: 1g` (Chromium + up to 2 concurrent renders) |
-| Volume | None. Templates are baked into the image; the demo is read-only (`GENEPDF_READONLY=true`): edits are rendered but never saved |
+| Volume | `templates` → `/data/templates`: studio edits are saved there. On startup, template version folders shipped in the image are copied in **only if missing**, so a deploy adds new templates/versions but never overwrites edits (to ship a change to an existing version, bump the version). |
 | Healthcheck | `GET /health` |
 
 ## Secrets (`/srv/genepdf/.env`)
@@ -20,7 +20,7 @@ The demo's URL is deliberately not written anywhere in this repo: it lives in `.
 |---|---|
 | `GENEPDF_HOST` | **Required.** The demo's hostname. |
 | `BASIC_AUTH_USERS` | **Required.** Traefik basic auth, htpasswd format: `htpasswd -nbB demo '<password>'`. Put the value in **single quotes** in `.env` so compose doesn't interpolate the `$` in the hash. |
-| `GENEPDF_READONLY` | Optional, defaults to `true` |
+| `GENEPDF_READONLY` | Optional, defaults to `false` (studio can save). `true`: edits are rendered but never saved |
 
 Basic auth is not optional: the studio sends arbitrary HTML to Chromium. Network access from Chromium is blocked and
 JavaScript is disabled, but the demo should still not be an open rendering service.

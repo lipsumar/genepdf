@@ -1,0 +1,20 @@
+@page { size: A4; margin: 20mm 20mm 22mm 20mm; }
+
+body { margin: 0; font-family: "DejaVu Sans", sans-serif; font-size: 9.5pt; line-height: 1.45; color: #1d1d1f; }
+
+header { display: flex; justify-content: space-between; margin-bottom: 14mm; }
+.recipient { width: 75mm; margin-top: 16mm; }
+.meta { color: #666; margin: 0 0 2mm; }
+h1 { font-size: 14pt; margin: 0 0 6mm; }
+
+table { width: 100%; border-collapse: collapse; margin: 4mm 0 6mm; }
+thead { display: table-header-group; }
+th { text-align: left; white-space: nowrap; font-size: 8pt; text-transform: uppercase; color: #666; border-bottom: 0.4mm solid #1d1d1f; padding: 1.5mm 2mm; }
+td { border-bottom: 0.2mm solid #ccc; padding: 2mm; vertical-align: top; }
+tr { break-inside: avoid; }
+.num { text-align: right; white-space: nowrap; }
+.note { color: #666; font-size: 8.5pt; }
+
+/* Footer: Chromium footer template, its own document with its own font size. */
+.g-page-footer { width: 100%; padding: 0 20mm 8mm; box-sizing: border-box; font-family: "DejaVu Sans", sans-serif; }
+.footer { display: flex; justify-content: space-between; font-size: 7pt; color: #666; }
