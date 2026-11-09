@@ -72,6 +72,7 @@ One template per language (`invoice-fr`, `invoice-nl`, …). The `lang` attribut
 | `g:each="x in expr"` | Repeats the element. `loop.index`, `loop.number`, `loop.first`, `loop.last`, `loop.count`. Evaluated before `g:if`, so `g:if` filters items. |
 | `g:text="expr"` | Replaces the element's content. |
 | `<g:block>` | Wrapper that disappears (condition/loop on several elements). |
+| `<g:barcode type="qr" value="{{ url }}" width="22mm"/>` | Inline SVG barcode. Types: `qr` `datamatrix` `pdf417` `code128` `code39` `ean13` `ean8` `upca` `itf`. 2D codes default to a width and keep their aspect ratio; 1D codes default to 0.33 mm per bar and 12 mm high. `class`/`style` are kept. Empty value → nothing; a value the format can't encode is an error. |
 | Operators | `. [] + - * / % == != < <= > >= and or not && \|\| ! a ? b : c` |
 | Filters | `money:'EUR'` `number:'0.00'` `date:'d MMMM yyyy'` `upper` `lower` `trim` `default:x` `join:', '` `sum:'field'` `count` `first` `last` `round:n` `abs` |
 | Entities | HTML named entities (`&nbsp;`, `&eacute;`…) are accepted. |

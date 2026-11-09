@@ -12,6 +12,7 @@
     <!-- Pinned: 6.2.4 is the last MIT release. 6.5+ is AGPL-3.0 or commercial and refuses to run without a license. -->
     <PackageReference Include="PDFsharp" Version="[6.2.4]" />
     <PackageReference Include="PuppeteerSharp" Version="25.15.0" />
+    <PackageReference Include="ZXing.Net" Version="0.16.11" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
     <!-- Transitive from PDFsharp; the version it asks for has known vulnerabilities. -->

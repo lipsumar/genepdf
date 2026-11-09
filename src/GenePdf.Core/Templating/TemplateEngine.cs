@@ -14,6 +14,7 @@ namespace GenePdf.Templating;
 /// <item><c>g:each="item in expr"</c> repeats the element; <c>loop.index</c> (0-based), <c>loop.number</c>, <c>loop.first</c>, <c>loop.last</c>, <c>loop.count</c>. Evaluated before g:if, so g:if can filter items.</item>
 /// <item><c>g:text="expr"</c> replaces the element's content with the value</item>
 /// <item><c>{{ expr }}</c> in text and attribute values. An attribute whose whole value is <c>{{ expr }}</c> is dropped when the value is null or false.</item>
+/// <item><c>&lt;g:barcode type="qr|datamatrix|pdf417|code128|code39|ean13|ean8|upca|itf" value="…" width? height?/&gt;</c> becomes an inline SVG</item>
 /// <item><c>&lt;g:block&gt;</c> is a wrapper that disappears from the output (useful for g:if/g:each on several elements).</item>
 /// </list>
 /// </summary>
@@ -21,7 +22,7 @@ public sealed partial class TemplateEngine
 {
     public static readonly XNamespace G = "urn:genepdf";
     private static readonly XName IfAttr = G + "if", ElseIfAttr = G + "else-if", ElseAttr = G + "else", EachAttr = G + "each", TextAttr = G + "text";
-    private static readonly XName Block = G + "block";
+    private static readonly XName Block = G + "block", Barcode = G + "barcode";
 
     /// <summary>g: elements that the engine leaves alone (handled by the composer afterwards).</summary>
     private static readonly HashSet<string> PassThroughElements = ["page-number", "page-count"];
@@ -149,7 +150,7 @@ public sealed partial class TemplateEngine
         }
 
         // --- unknown g: things are errors (catches typos such as g:iff)
-        if (e.Name.Namespace == G && e.Name != Block && !PassThroughElements.Contains(e.Name.LocalName))
+        if (e.Name.Namespace == G && e.Name != Block && e.Name != Barcode && !PassThroughElements.Contains(e.Name.LocalName))
             throw TemplateException.At(e, $"Unknown or misplaced element <g:{e.Name.LocalName}>");
         foreach (var a in e.Attributes())
             if (a.Name.Namespace == G && a.Name != TextAttr)
@@ -167,6 +168,14 @@ public sealed partial class TemplateEngine
                 else a.Value = Values.ToDisplayString(v, scope.Culture);
             }
             else a.Value = InterpolateText(a.Value, scope);
+        }
+
+        // --- g:barcode (attributes are interpolated by now)
+        if (e.Name == Barcode)
+        {
+            if (Barcodes.Render(e) is { } svg) e.ReplaceWith(svg);
+            else e.Remove();
+            return;
         }
 
         // --- g:text

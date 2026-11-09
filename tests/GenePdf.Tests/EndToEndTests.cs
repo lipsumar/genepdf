@@ -24,21 +24,22 @@ public class EndToEndTests
     [InlineData("reminder-en", "final-notice")]
     [InlineData("pension-decision-fr", "default")]
     [InlineData("pension-decision-fr", "survivor")]
-    public async Task Renders_samples_to_pdf_with_metadata(string document, string sample)
+    [InlineData("pension-decision-fr", "default", "1.1")]
+    public async Task Renders_samples_to_pdf_with_metadata(string document, string sample, string version = "1.0")
     {
         Skip.If(string.IsNullOrEmpty(Chromium) || !File.Exists(Chromium), "Chromium not available");
         var root = TemplateRoot();
         await using var renderer = new ChromiumRenderer(new ChromiumOptions { ExecutablePath = Chromium });
         var generator = new PdfGenerator(new GenePdfOptions { TemplateRoot = root }, renderer);
-        var json = await File.ReadAllTextAsync(Path.Combine(root, "documents", document, "1.0", "samples", sample + ".json"));
+        var json = await File.ReadAllTextAsync(Path.Combine(root, "documents", document, version, "samples", sample + ".json"));
 
-        var result = await generator.GenerateAsync(new PdfRequest(document, "1.0", json));
+        var result = await generator.GenerateAsync(new PdfRequest(document, version, json));
 
         Assert.StartsWith("%PDF-", System.Text.Encoding.ASCII.GetString(result.Pdf, 0, 5));
         Assert.Empty(result.Diagnostics);
         var meta = PdfAConverter.ReadTechMetadata(result.Pdf);
         Assert.Equal(document, meta["documentTemplate"]);
-        Assert.Equal("1.0", meta["documentVersion"]);
+        Assert.Equal(version, meta["documentVersion"]);
         Assert.False(string.IsNullOrEmpty(meta["layoutTemplate"]));
     }
 }

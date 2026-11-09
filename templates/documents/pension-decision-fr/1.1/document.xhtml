@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<g:document xmlns="http://www.w3.org/1999/xhtml" xmlns:g="urn:genepdf"
+            version="1.1" layout="simple" layout-version="1.0" lang="fr-BE"
+            title="Décision de pension {{ reference }}">
+
+  <g:fill slot="title">Décision relative à votre pension</g:fill>
+
+  <p>Madame, Monsieur,</p>
+
+  <p>
+    Nous avons examiné vos droits à la pension en tant que travailleur indépendant
+    (n° de registre national {{ beneficiary.nationalNumber }}).
+    Vous trouverez ci-dessous les décisions prises.
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>Prise de cours</th><th>Objet</th><th>Décision</th><th class="num">Montant mensuel brut</th></tr>
+    </thead>
+    <tbody>
+      <tr g:each="d in decisions">
+        <td>{{ d.startDate | date:'d/MM/yyyy' }}</td>
+        <td>{{ d.subject }}</td>
+        <td>
+          {{ d.decision }}
+          <div g:if="d.reason" class="note">{{ d.reason }}</div>
+        </td>
+        <td class="num">{{ d.amount ? (d.amount | money:'EUR') : '–' }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    Si vous n'êtes pas d'accord avec cette décision, vous pouvez introduire un recours auprès du
+    tribunal du travail de votre domicile dans les trois mois suivant sa notification.
+  </p>
+
+  <div g:if="dossierUrl" style="display: flex; align-items: center; gap: 5mm; margin: 6mm 0; break-inside: avoid;">
+    <g:barcode type="qr" value="{{ dossierUrl }}" width="22mm"/>
+    <div>
+      <strong>Votre dossier en ligne</strong><br/>
+      Scannez ce code pour consulter le détail du calcul de votre pension.
+    </div>
+  </div>
+
+  <p>Veuillez agréer, Madame, Monsieur, nos salutations distinguées.</p>
+</g:document>

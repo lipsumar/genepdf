@@ -86,3 +86,54 @@ public class TemplateEngineTests
         Assert.Empty(diagnostics);
     }
 }
+
+public class BarcodeTests
+{
+    private static string Render(string body, string json = "{}")
+    {
+        var root = XElement.Parse($"<div xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:g=\"urn:genepdf\">{body}</div>", LoadOptions.SetLineInfo);
+        SourceInfo.Stamp(root, "test.xhtml");
+        var engine = new TemplateEngine([]);
+        engine.Process(root, engine.CreateScope(JsonNode.Parse(json)!.AsObject(), CultureInfo.InvariantCulture));
+        SourceInfo.Strip(root);
+        return root.ToString(SaveOptions.DisableFormatting);
+    }
+
+    [Fact]
+    public void Qr_becomes_square_svg_with_default_width()
+    {
+        var html = Render("""<g:barcode type="qr" value="{{ ref }}" class="code"/>""", """{"ref":"PEN/2026/048213"}""");
+        Assert.Contains("<svg", html);
+        Assert.Contains("class=\"code\"", html);
+        Assert.Contains("aria-label=\"PEN/2026/048213\"", html);
+        Assert.Contains("width:25mm;", html);
+        Assert.DoesNotContain("preserveAspectRatio", html);
+        Assert.Matches("<path d=\"M\\d", html);
+    }
+
+    [Fact]
+    public void Linear_code_is_stretched_to_its_height_and_sized_from_modules()
+    {
+        var html = Render("""<g:barcode type="code128" value="ABC-123" height="10mm"/>""");
+        Assert.Contains("preserveAspectRatio=\"none\"", html);
+        Assert.Contains("height:10mm;", html);
+        Assert.Matches("viewBox=\"0 0 \\d+ 1\"", html);
+        Assert.Matches("width:\\d+(\\.\\d+)?mm;", html);
+    }
+
+    [Fact]
+    public void Empty_value_renders_nothing()
+        => Assert.DoesNotContain("svg", Render("""<p>a<g:barcode type="qr" value="{{ missing | default:'' }}"/></p>"""));
+
+    [Fact]
+    public void Invalid_value_is_an_error_with_location()
+    {
+        var ex = Assert.Throws<TemplateException>(() => Render("<p/>\n<g:barcode type=\"ean13\" value=\"not a number\"/>"));
+        Assert.Contains("ean13", ex.Message);
+        Assert.Equal(2, ex.Line);
+    }
+
+    [Fact]
+    public void Unknown_type_is_an_error()
+        => Assert.Contains("type=", Assert.Throws<TemplateException>(() => Render("""<g:barcode type="qrcode" value="x"/>""")).Message);
+}
